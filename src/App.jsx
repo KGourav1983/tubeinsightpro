@@ -479,9 +479,9 @@ function ScoreRing({ score, size = 80 }) {
 
 function ReportStatCard({ label, value }) {
   return (
-    <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 12, padding: "16px 20px", flex: 1, minWidth: 100 }}>
-      <div style={{ color: "#64748b", fontSize: 11, textTransform: "uppercase", letterSpacing: 1 }}>{label}</div>
-      <div style={{ color: "#f8fafc", fontSize: 22, fontWeight: 700, marginTop: 4 }}>{value}</div>
+    <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 12, padding: "12px 14px", flex: "1 1 80px", minWidth: 0 }}>
+      <div style={{ color: "#64748b", fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5, whiteSpace: "nowrap" }}>{label}</div>
+      <div style={{ color: "#f8fafc", fontSize: 18, fontWeight: 700, marginTop: 4, whiteSpace: "nowrap" }}>{value}</div>
     </div>
   );
 }
@@ -526,24 +526,25 @@ function ReportModal({ report, onClose }) {
       position: "fixed", inset: 0, zIndex: 200,
       background: "rgba(2,6,23,0.85)", backdropFilter: "blur(6px)",
       display: "flex", alignItems: "flex-start", justifyContent: "center",
-      padding: "40px 20px", overflowY: "auto"
+      padding: "16px 12px", overflowY: "auto"
     }}>
       <div onClick={e => e.stopPropagation()} style={{
         background: "#020617", border: "1px solid #1e293b",
-        borderRadius: 20, maxWidth: 760, width: "100%",
+        borderRadius: 16, maxWidth: 760, width: "100%",
         position: "relative", animation: "modalIn 0.25s ease",
         fontFamily: "'Inter', system-ui, sans-serif", color: "#f8fafc"
       }}>
-        {/* Close */}
+        {/* Close — always top-right of modal, not fixed to viewport */}
         <button onClick={onClose} style={{
-          position: "fixed", top: 56, right: "calc(50% - 380px + 20px)", zIndex: 2,
-          width: 36, height: 36, borderRadius: "50%",
+          position: "absolute", top: 14, right: 14, zIndex: 2,
+          width: 34, height: 34, borderRadius: "50%",
           background: "#0f172a", border: "1px solid #1e293b",
-          color: "#f8fafc", fontSize: 16, display: "flex",
-          alignItems: "center", justifyContent: "center"
+          color: "#f8fafc", fontSize: 15, display: "flex",
+          alignItems: "center", justifyContent: "center",
+          cursor: "pointer"
         }}>✕</button>
 
-        <div style={{ padding: "32px 28px 28px" }}>
+        <div style={{ padding: "24px 16px 24px" }}>
           {/* Default report badge */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 6,
@@ -555,18 +556,18 @@ function ReportModal({ report, onClose }) {
           </div>
 
           {/* Video Info */}
-          <div style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 16, padding: 24, marginBottom: 16, display: "flex", gap: 16, alignItems: "flex-start" }}>
+          <div className="video-info-card" style={{ background: "#0f172a", border: "1px solid #1e293b", borderRadius: 16, padding: 24, marginBottom: 16, display: "flex", gap: 16, alignItems: "flex-start" }}>
             {v.snippet?.thumbnails?.medium?.url ? (
-              <img src={v.snippet.thumbnails.medium.url} alt="thumbnail" style={{ width: 140, borderRadius: 10, flexShrink: 0 }} />
+              <img className="video-info-thumb" src={v.snippet.thumbnails.medium.url} alt="thumbnail" style={{ width: 140, borderRadius: 10, flexShrink: 0 }} />
             ) : (
-              <div style={{
+              <div className="video-info-thumb" style={{
                 width: 140, aspectRatio: "16/9", borderRadius: 10, flexShrink: 0,
                 background: "linear-gradient(135deg, #1a1d27, #0f1117)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 color: "#475569", fontSize: 18
               }}>▶</div>
             )}
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 700, fontSize: 16, lineHeight: 1.4, marginBottom: 8 }}>{v.snippet?.title}</div>
               <div style={{ color: "#64748b", fontSize: 13, marginBottom: 12 }}>
                 {v.snippet?.channelTitle} · {v.snippet?.publishedAt && new Date(v.snippet.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
@@ -578,6 +579,13 @@ function ReportModal({ report, onClose }) {
               </div>
             </div>
           </div>
+
+          <style>{`
+            @media (max-width: 480px) {
+              .video-info-card { flex-direction: column !important; }
+              .video-info-thumb { width: 100% !important; }
+            }
+          `}</style>
 
           {/* Key Insight */}
           {a.keyInsight && (
@@ -732,18 +740,10 @@ function ReportModal({ report, onClose }) {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        @media (max-width: 820px) {
-          button[style*="position: fixed"][style*="top: 56"] {
-            position: absolute !important;
-            right: 18px !important;
-            top: 18px !important;
-          }
-        }
       `}</style>
     </div>
   );
 }
-
 
 // ============ CONTACT FORM ============
 function ContactSection() {
@@ -782,7 +782,7 @@ function ContactSection() {
       <div style={{ maxWidth: 720, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--red)", marginBottom: 14, letterSpacing: 1 }}>
-            GET YOUR REPORT
+            GET YOUR REPORT : First report free for early users
           </div>
           <h2 style={{ fontFamily: "var(--display)", fontSize: "clamp(28px, 4vw, 44px)", lineHeight: 1.1, marginBottom: 16 }}>
             SEND YOUR VIDEO.<br />WE'LL DO THE REST.
@@ -904,4 +904,3 @@ export default function App() {
     </div>
   );
 }
-
